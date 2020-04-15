@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import styled from "styled-components";
 import { Modal, Button as BaseButton, Icon } from "../../../shared/components";
-import { OrderItem } from "../../../shared/components/OrderList";
+import { ItemsList } from "../../../shared/components";
 
 import {
   orders as allOrders,
@@ -70,19 +70,7 @@ const ViewOrders = ({ onHide, tableId, tableNum }) => {
       {getOrders().map(({ items }) => (
         <OrderWrapper>
           <OrderItemsWrapper>
-            {items.map(({ listItemId, title, note, price }) => {
-              return (
-                <OrderItem
-                  key={listItemId}
-                  listItemId={listItemId}
-                  title={title}
-                  note={note}
-                  price={price}
-                  onAddNote={() => console.log("note")}
-                  onRemoveItem={() => console.log("remove")}
-                />
-              );
-            })}
+            <ItemsList items={items} />
             <ButtonsWrapper>
               <Button>
                 <Icon name="times" />

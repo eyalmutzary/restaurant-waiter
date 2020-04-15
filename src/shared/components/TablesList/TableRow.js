@@ -28,12 +28,6 @@ const TableBox = styled.td`
 
 const Icon = styled(BaseIcon)`
   padding: 10px;
-
-  &:hover {
-    color: ${({ theme }) => theme.colors.red};
-    cursor: pointer;
-    transition: 0.4s;
-  }
 `;
 
 const Alert = styled.div`
@@ -44,6 +38,8 @@ const Alert = styled.div`
   padding: 0px;
   margin: 0;
 `;
+
+const columns = ["Table", "", "Note", "Waiter Name", "Total Price", ""];
 
 const TableRow = ({
   isHeader,
@@ -70,17 +66,17 @@ const TableRow = ({
         <TableBox>{waiterName}</TableBox>
         <TableBox>{totalPrice.toFixed(2)}$</TableBox>
         <TableBox>
-          <Icon name="ellipsis-h" onClick={() => onActionClick(tableId, tableNum)} />
+          <Icon
+            name="ellipsis-h"
+            onClick={() => onActionClick(tableId, tableNum)}
+          />
         </TableBox>
       </RowWrapper>
     ) : (
       <RowWrapper>
-        <HeaderBox>Table</HeaderBox>
-        <HeaderBox />
-        <HeaderBox>Note</HeaderBox>
-        <HeaderBox>Waiter Name</HeaderBox>
-        <HeaderBox>Total Price</HeaderBox>
-        <HeaderBox />
+        {columns.map((header) => (
+          <HeaderBox>{header}</HeaderBox>
+        ))}
       </RowWrapper>
     )}
   </>

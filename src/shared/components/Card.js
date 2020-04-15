@@ -47,12 +47,6 @@ const IconsWrapper = styled.div`
 
 const Icon = styled(BaseIcon)`
   margin-left: 20px;
-
-  &:hover {
-    cursor: pointer;
-    color: ${({ theme }) => theme.colors.red};
-    transition: 0.4s;
-  }
 `;
 
 const Card = ({

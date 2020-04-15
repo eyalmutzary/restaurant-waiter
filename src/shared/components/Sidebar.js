@@ -4,7 +4,7 @@ import BaseIcon from "./Icon";
 import { useHistory } from "react-router-dom";
 
 const SidebarWarpper = styled.div`
-  width: 5vw;
+  width: 60px;
   display: flex;
   justify-content: space-between;
   flex-direction: column;
@@ -20,21 +20,13 @@ const Icon = styled(BaseIcon).attrs({ size: "large" })`
   font-size: 36px;
   padding: 10px 0px 10px 0px;
   color: ${({ theme }) => theme.colors.silver};
-
-  &:hover {
-    transition: 0.4s;
-    color: ${({ theme }) => theme.colors.red};
-    cursor: pointer;
-  }
 `;
 
 const Sidebar = ({ top, center, bottom }) => {
   const history = useHistory();
   return (
     <SidebarWarpper>
-      <Wrapper>
-        {top && top.map(({ ...rest }) => <Icon {...rest} />)}
-      </Wrapper>
+      <Wrapper>{top && top.map(({ ...rest }) => <Icon {...rest} />)}</Wrapper>
       <Wrapper>
         {center && center.map(({ ...rest }) => <Icon {...rest} />)}
       </Wrapper>

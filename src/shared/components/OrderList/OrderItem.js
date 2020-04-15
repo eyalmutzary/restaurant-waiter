@@ -43,12 +43,6 @@ const ToolbarWrapper = styled.div`
 
 const TopIcon = styled(BaseIcon)`
   margin: 5px 15px 0px 10px;
-
-  &:hover {
-    cursor: pointer;
-    color: ${({ theme }) => theme.colors.red};
-    transition: 0.4s;
-  }
 `;
 
 const NoteIcon = styled(BaseIcon)`
@@ -88,7 +82,7 @@ const OrderItem = ({
       </ToolbarWrapper>
       {note && (
         <NoteWrapper>
-          <NoteIcon name="star-of-life"></NoteIcon>
+          <NoteIcon name="star-of-life" hover={false}></NoteIcon>
           <Note>{note}</Note>
         </NoteWrapper>
       )}

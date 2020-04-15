@@ -60,9 +60,23 @@ library.add(
 
 const IconWrapper = styled.div``;
 
-const Icon = ({ name, ...rest }) => (
+IconWrapper.withHover = styled.div`
+  &:hover {
+    transition: ease-out 0.4s;
+    color: ${({ theme }) => theme.colors.red};
+    cursor: pointer;
+  }
+`;
+
+const Icon = ({ name, hover = true, ...rest }) => (
   <IconWrapper {...rest}>
-    <FontAwesomeIcon icon={name} />
+    {hover ? (
+      <IconWrapper.withHover>
+        <FontAwesomeIcon icon={name} />
+      </IconWrapper.withHover>
+    ) : (
+      <FontAwesomeIcon icon={name} />
+    )}
   </IconWrapper>
 );
 

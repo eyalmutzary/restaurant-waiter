@@ -1,12 +1,7 @@
 import React, { useState, useCallback } from "react";
 import styled from "styled-components";
 import { tables } from "../shared/constants";
-import {
-  Screen,
-  TablesList,
-  Sidebar,
-  Icon as BaseIcon,
-} from "../shared/components";
+import { Screen, TablesList, Sidebar, Icon } from "../shared/components";
 import {
   Confirm as ConfirmModal,
   Actions as ActionsModal,
@@ -30,14 +25,6 @@ const WaiterAuth = styled.div`
 
 const AuthText = styled.div`
   margin: 0px 20px 0px 20px;
-`;
-
-const Icon = styled(BaseIcon)`
-  &:hover {
-    color: ${({ theme }) => theme.colors.red};
-    cursor: pointer;
-    transition: 0.4s;
-  }
 `;
 
 const modalTypes = {
