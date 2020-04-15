@@ -74,8 +74,8 @@ const TableRow = ({
       </RowWrapper>
     ) : (
       <RowWrapper>
-        {columns.map((header) => (
-          <HeaderBox>{header}</HeaderBox>
+        {columns.map((header, index) => (
+          <HeaderBox key={index}>{header}</HeaderBox>
         ))}
       </RowWrapper>
     )}

@@ -18,8 +18,8 @@ const TableList = ({ tables, ...rest }) => (
   <Wrapper>
     <TableWrapper>
       <TableRow isHeader="true" />
-      {tables.map(({ ...args }) => (
-        <TableRow {...args} {...rest}/>
+      {tables.map(({ tableNum, ...args }) => (
+        <TableRow key={tableNum} tableNum={tableNum} {...args} {...rest} />
       ))}
     </TableWrapper>
   </Wrapper>

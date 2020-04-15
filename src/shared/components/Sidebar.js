@@ -26,12 +26,23 @@ const Sidebar = ({ top, center, bottom }) => {
   const history = useHistory();
   return (
     <SidebarWarpper>
-      <Wrapper>{top && top.map(({ ...rest }) => <Icon {...rest} />)}</Wrapper>
       <Wrapper>
-        {center && center.map(({ ...rest }) => <Icon {...rest} />)}
+        {top &&
+          top.map(({ name, ...rest }) => (
+            <Icon key={name} name={name} {...rest} />
+          ))}
       </Wrapper>
       <Wrapper>
-        {bottom && bottom.map(({ ...rest }) => <Icon {...rest} />)}
+        {center &&
+          center.map(({ name, ...rest }) => (
+            <Icon key={name} name={name} {...rest} />
+          ))}
+      </Wrapper>
+      <Wrapper>
+        {bottom &&
+          bottom.map(({ name, ...rest }) => (
+            <Icon key={name} name={name} {...rest} />
+          ))}
       </Wrapper>
     </SidebarWarpper>
   );

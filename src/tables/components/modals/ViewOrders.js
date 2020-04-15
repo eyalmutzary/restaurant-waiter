@@ -67,8 +67,8 @@ const ViewOrders = ({ onHide, tableId, tableNum }) => {
 
   return (
     <Modal title={tableNum + " - Orders"} onHide={onHide}>
-      {getOrders().map(({ items }) => (
-        <OrderWrapper>
+      {getOrders().map(({ orderId, items }) => (
+        <OrderWrapper key={orderId}>
           <OrderItemsWrapper>
             <ItemsList items={items} />
             <ButtonsWrapper>
