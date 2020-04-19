@@ -14,7 +14,7 @@ const TableWrapper = styled.table`
   overflow: hidden;
 `;
 
-const TableList = ({ tables, ...rest }) => (
+const TablesList = ({ tables, ...rest }) => (
   <Wrapper>
     <TableWrapper>
       <TableRow isHeader="true" />
@@ -24,4 +24,4 @@ const TableList = ({ tables, ...rest }) => (
     </TableWrapper>
   </Wrapper>
 );
-export default TableList;
+export default TablesList;

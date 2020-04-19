@@ -4,11 +4,6 @@ import { Modal, Input, TextArea } from "../../../shared/components";
 
 const FormWrapper = styled.div``;
 
-const Text = styled.div`
-  font-size: 12px;
-  color: ${({ theme }) => theme.colors.gray};
-`;
-
 const AddTable = ({ onHide, waiterName }) => {
   const setOfButtons = useMemo(
     () => [

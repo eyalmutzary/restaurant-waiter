@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import BaseIcon from "../Icon";
+import BaseIcon from "../../../shared/components/Icon";
 
 const RowWrapper = styled.tr`
   background-color: ${({ theme }) => theme.colors.white};

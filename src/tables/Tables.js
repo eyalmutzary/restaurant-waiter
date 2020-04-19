@@ -1,13 +1,14 @@
 import React, { useState, useCallback } from "react";
 import styled from "styled-components";
 import { tables } from "../shared/constants";
-import { Screen, TablesList, Sidebar, Icon } from "../shared/components";
+import { Screen, Sidebar, Icon } from "../shared/components";
 import {
   Confirm as ConfirmModal,
   Actions as ActionsModal,
   AddTable as AddTableModal,
   ViewOrders as ViewOrdersModal,
-} from "./components/modals";
+  TablesList,
+} from "./components";
 
 const ContentWrapper = styled.div`
   display: flex;
