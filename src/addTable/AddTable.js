@@ -64,13 +64,13 @@ const Icon = styled(BaseIcon)`
   margin-right: 10px;
 `;
 
-const sidebarButtons = {
-  top: [{ name: "arrow-left" }],
-  center: [],
-  bottom: [],
-};
+const AddTable = ({ history }) => {
+  const sidebarButtons = {
+    top: [{ name: "arrow-left", onClick: () => history.goBack() }],
+    center: [],
+    bottom: [],
+  };
 
-const AddTable = () => {
   return (
     <Screen>
       <Sidebar

@@ -31,11 +31,9 @@ const AuthText = styled.div`
 const modalTypes = {
   CONFIRM: "CONFIRM",
   ACTIONS: "ACTIONS",
-  ADDTABLE: "ADDTABLE",
-  VIEWORDERS: "VIEWORDERS",
 };
 
-const Tables = () => {
+const Tables = ({ history }) => {
   const [whichModalShown, setWhichModalShown] = useState();
   const [selectedTable, setSelectedTable] = useState({
     tableId: null,
@@ -45,8 +43,8 @@ const Tables = () => {
 
   const sidebarButtons = {
     top: [
-      { name: "sync-alt" },
-      { name: "plus", onClick: () => setWhichModalShown(modalTypes.ADDTABLE) },
+      { name: "sync-alt", key: "sync-alt" },
+      { name: "plus", key: "plus", onClick: () => history.push("/addTable") },
     ],
     center: [],
     bottom: [{ name: "cog" }],
@@ -74,17 +72,14 @@ const Tables = () => {
       {whichModalShown === modalTypes.ACTIONS && (
         <ActionsModal
           onHide={handleOnHide}
-          onViewOrders={() => setWhichModalShown(modalTypes.VIEWORDERS)}
+          onViewOrders={() =>
+            history.push({
+              pathname: `/viewOrders`,
+              search: `?tableId=${selectedTable.tableId}`,
+            })
+          }
           tableNum={selectedTable.tableNum}
         />
-      )}
-
-      {whichModalShown === modalTypes.ADDTABLE && (
-        <AddTableModal onHide={handleOnHide} />
-      )}
-
-      {whichModalShown === modalTypes.VIEWORDERS && (
-        <ViewOrdersModal onHide={handleOnHide} {...selectedTable} />
       )}
 
       <Sidebar
