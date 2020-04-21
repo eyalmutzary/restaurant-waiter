@@ -5,8 +5,6 @@ import { Screen, Sidebar, Icon } from "../shared/components";
 import {
   Confirm as ConfirmModal,
   Actions as ActionsModal,
-  AddTable as AddTableModal,
-  ViewOrders as ViewOrdersModal,
   TablesList,
 } from "./components";
 

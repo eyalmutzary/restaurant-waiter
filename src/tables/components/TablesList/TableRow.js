@@ -58,7 +58,7 @@ const TableRow = ({
         <TableBox>
           {isAlert && (
             <Alert>
-              <BaseIcon name="exclamation-circle" />
+              <BaseIcon name="exclamation-circle" hover={false} />
             </Alert>
           )}
         </TableBox>

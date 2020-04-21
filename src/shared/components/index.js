@@ -6,5 +6,6 @@ export { default as Modal } from "./Modal";
 export { OrderList, ItemsList } from "./OrderList";
 export { default as Input } from "./Input";
 export { default as TextArea } from "./TextArea";
+export { default as LoadingSpinner } from "./LoadingSpinner";
 
 export * from "./Layout";

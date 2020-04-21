@@ -1,4 +1,5 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useState } from "react";
+import { useForm } from "react-hook-form";
 import styled from "styled-components";
 import {
   Input,
@@ -7,7 +8,9 @@ import {
   Sidebar,
   Icon as BaseIcon,
   Button,
+  LoadingSpinner,
 } from "../shared/components";
+import axios from "axios";
 
 const ContentWrapper = styled.div`
   display: flex;
@@ -16,10 +19,11 @@ const ContentWrapper = styled.div`
   align-items: center;
 `;
 
-const FormWrapper = styled.div`
+const FormWrapper = styled.form`
   width: 600px;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   background-color: ${({ theme }) => theme.colors.white};
   padding: 20px;
   border: 2px solid ${({ theme }) => theme.colors.lightPink};
@@ -64,7 +68,34 @@ const Icon = styled(BaseIcon)`
   margin-right: 10px;
 `;
 
+const ErrorMessage = styled.div`
+  color: red;
+  margin-left: 20px;
+  margin-top: 0;
+`;
+
 const AddTable = ({ history }) => {
+  const { register, handleSubmit, errors } = useForm();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const onSubmit = useCallback((data) => {
+    setIsLoading(true);
+    const postData = {
+      WaiterId: 1,
+      CustomerTableStatusId: 1,
+      ...data,
+    };
+    axios
+      .post("/customerTables", postData)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+      .then(() => setIsLoading(false));
+  }, []);
+
   const sidebarButtons = {
     top: [{ name: "arrow-left", onClick: () => history.goBack() }],
     center: [],
@@ -87,18 +118,41 @@ const AddTable = ({ history }) => {
             // onClick={() => setWhichModalShown(modalTypes.CONFIRM)}
           />
         </WaiterAuth>
-        <FormWrapper>
+        <FormWrapper onSubmit={handleSubmit(onSubmit)}>
           <TitleWrapper>New Table</TitleWrapper>
-          <Input name="Table Number" />
-          <Input name="Diners" type="number" />
-          <TextArea placeholder="Enter note..." />
+          {isLoading && <LoadingSpinner />}
+          <Input
+            placeholder="Table Number"
+            name="tableNum"
+            forwardRef={register({ required: "Table Num is required." })}
+          />
+          {errors.tableNum && (
+            <ErrorMessage>{errors.tableNum.message}</ErrorMessage>
+          )}
+          <Input
+            placeholder="Diners"
+            name="diners"
+            type="number"
+            forwardRef={register({ required: "Table Num is required." })}
+          />
+          {errors.diners && (
+            <ErrorMessage>{errors.diners.message}</ErrorMessage>
+          )}
+          <TextArea placeholder="Enter note..." name="note" ref={register} />
           <ButtonsWrapper>
-            <Button.Black>
-              <Icon name="sync-alt" />
+            <Button.Black type="reset">
+              <Icon name="sync-alt" hover={false} />
               Reset
             </Button.Black>
-            <Button.Black>
-              <Icon name="plus" />
+            <Button.Black type="submit">
+              <Icon
+                name="plus"
+                hover={false}
+                // onClick={() => {
+                //   console.log("hit");
+                //   setIsLoading(true);
+                // }}
+              />
               Confirm
             </Button.Black>
           </ButtonsWrapper>
