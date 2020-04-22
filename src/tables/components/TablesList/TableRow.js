@@ -26,6 +26,10 @@ const TableBox = styled.td`
   padding: 10px;
 `;
 
+TableBox.Centered = styled(TableBox)`
+  text-align: center;
+`;
+
 const Icon = styled(BaseIcon)`
   padding: 10px;
 `;
@@ -39,14 +43,15 @@ const Alert = styled.div`
   margin: 0;
 `;
 
-const columns = ["Table", "", "Note", "Waiter Name", "Total Price", ""];
+const columns = ["Table", "", "Note", "Diners", "Total Price", "Status", ""];
 
 const TableRow = ({
   isHeader,
-  tableId,
+  id,
   tableNum,
-  tableNote,
-  waiterName,
+  note,
+  diners,
+  CustomerTableStatus,
   totalPrice,
   isAlert,
   onActionClick,
@@ -55,20 +60,24 @@ const TableRow = ({
     {!isHeader ? (
       <RowWrapper>
         <TableBox>{tableNum}</TableBox>
-        <TableBox>
+        <TableBox.Centered>
           {isAlert && (
             <Alert>
               <BaseIcon name="exclamation-circle" hover={false} />
             </Alert>
           )}
-        </TableBox>
-        <TableBox>{tableNote}</TableBox>
-        <TableBox>{waiterName}</TableBox>
-        <TableBox>{totalPrice.toFixed(2)}$</TableBox>
+        </TableBox.Centered>
+        <TableBox width="50%">{note}</TableBox>
+        <TableBox.Centered>{diners}</TableBox.Centered>
+        <TableBox.Centered>
+          {totalPrice ? totalPrice.toFixed(2) : "0.00"}$
+        </TableBox.Centered>
+        <TableBox.Centered>{CustomerTableStatus.status}</TableBox.Centered>
+
         <TableBox>
           <Icon
             name="ellipsis-h"
-            onClick={() => onActionClick(tableId, tableNum)}
+            onClick={() => onActionClick(id, tableNum)}
           />
         </TableBox>
       </RowWrapper>

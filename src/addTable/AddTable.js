@@ -78,23 +78,27 @@ const AddTable = ({ history }) => {
   const { register, handleSubmit, errors } = useForm();
   const [isLoading, setIsLoading] = useState(false);
 
-  const onSubmit = useCallback((data) => {
-    setIsLoading(true);
-    const postData = {
-      WaiterId: 1,
-      CustomerTableStatusId: 1,
-      ...data,
-    };
-    axios
-      .post("/customerTables", postData)
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.log(error);
-      })
-      .then(() => setIsLoading(false));
-  }, []);
+  const onSubmit = useCallback(
+    (data) => {
+      setIsLoading(true);
+      const postData = {
+        // WaiterId: 1,
+        status: "ordering",
+        ...data,
+      };
+      axios
+        .post("/customerTables", postData)
+        .then((response) => {
+          console.log(response);
+          history.push("/tables");
+        })
+        .catch((error) => {
+          console.log(error);
+        })
+        .then(() => setIsLoading(false));
+    },
+    [history]
+  );
 
   const sidebarButtons = {
     top: [{ name: "arrow-left", onClick: () => history.goBack() }],
@@ -145,14 +149,7 @@ const AddTable = ({ history }) => {
               Reset
             </Button.Black>
             <Button.Black type="submit">
-              <Icon
-                name="plus"
-                hover={false}
-                // onClick={() => {
-                //   console.log("hit");
-                //   setIsLoading(true);
-                // }}
-              />
+              <Icon name="plus" hover={false} />
               Confirm
             </Button.Black>
           </ButtonsWrapper>

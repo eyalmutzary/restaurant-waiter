@@ -1,13 +1,15 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import queryString from "query-string";
 import styled from "styled-components";
+import axios from "axios";
 import {
   Screen,
   Button as BaseButton,
   Icon,
   Sidebar,
   ItemsList,
+  LoadingSpinner,
 } from "../shared/components";
 
 import {
@@ -71,35 +73,34 @@ const Button = styled(BaseButton.Black)`
   width: 100px;
 `;
 
-const ViewOrders = ({ history, location }) => {
-  const queries = queryString.parse(location.search);
-  const tableId = queries.tableId;
+const LoadingWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  flex: 1;
+  align-items: center;
+`;
 
-  const getOrders = useCallback(() => {
-    let tableOrders = [];
-    allOrders.forEach((order) => {
-      if (order.tableId === tableId) {
-        tableOrders.push({ orderId: order.orderId, items: [] });
-      }
-    });
+const ViewOrders = ({ history, location: { search, tableNum } }) => {
+  const [tableId, setTableId] = useState(queryString.parse(search).tableId);
+  const [orders, setOrders] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-    const tableOrderedProducts = orderedProducts.filter((orderedProduct) => {
-      if (allOrders.find((order) => order.orderId === orderedProduct.orderId)) {
-        return true;
-      }
-      return false;
-    });
-
-    tableOrderedProducts.forEach((orderedProduct) => {
-      const product = foodCards.find(
-        (product) => product.productId === orderedProduct.productId
-      );
-      tableOrders
-        .find(({ orderId }) => orderId === orderedProduct.orderId)
-        .items.push(product);
-    });
-    return tableOrders;
+  const fetchOrders = useCallback(() => {
+    setIsLoading(true);
+    axios
+      .get(`/customerTables/products?id=${tableId}`)
+      .then(({ data }) => {
+        setOrders(data);
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+      .then(() => setIsLoading(false));
   }, [tableId]);
+
+  useEffect(() => {
+    fetchOrders();
+  }, [fetchOrders]);
 
   const sidebarButtons = {
     top: [{ name: "arrow-left", onClick: () => history.goBack() }],
@@ -115,31 +116,35 @@ const ViewOrders = ({ history, location }) => {
         bottom={sidebarButtons.bottom}
       />
       <TopWrapper>
-        <Text>Table: TableNum</Text>
+        <Text>Table: {tableNum}</Text>
         <WaiterAuth>
           <Text>Signed as: ADDNAME</Text>
-          <Icon
-            name="sign-out-alt"
-          />
+          <Icon name="sign-out-alt" />
         </WaiterAuth>
       </TopWrapper>
-
       <ContentWrapper>
-        {getOrders().map(({ orderId, items }) => (
-          <OrderWrapper key={orderId}>
-            <OrderItemsWrapper>
-              <ItemsList items={items} />
-              <ButtonsWrapper>
-                <Button>
-                  <Icon name="times" />
-                </Button>
-                <Button>
-                  <Icon name="check" />
-                </Button>
-              </ButtonsWrapper>
-            </OrderItemsWrapper>
-          </OrderWrapper>
-        ))}
+        {orders.length !== 0
+          ? orders.map(({ id, OrderedProducts }) => (
+              <OrderWrapper key={id}>
+                <OrderItemsWrapper>
+                  <ItemsList items={OrderedProducts} />
+                  <ButtonsWrapper>
+                    <Button>
+                      <Icon name="times" hover={false} />
+                    </Button>
+                    <Button>
+                      <Icon name="check" hover={false} />
+                    </Button>
+                  </ButtonsWrapper>
+                </OrderItemsWrapper>
+              </OrderWrapper>
+            ))
+          : !isLoading && <Text>no Orders!</Text>}
+        {isLoading && (
+          <LoadingWrapper>
+            <LoadingSpinner />
+          </LoadingWrapper>
+        )}
       </ContentWrapper>
     </Screen>
   );

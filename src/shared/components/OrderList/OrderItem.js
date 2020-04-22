@@ -9,7 +9,7 @@ const ItemWrapper = styled.div`
   justify-content: space-between;
   font-size: 16px;
   font-weight: 500;
-  margin: 10px 0px 10px 0px;
+  margin: 15px 0px 15px 0px;
 `;
 
 const IconsWrapper = styled.div`
@@ -70,7 +70,7 @@ const OrderItem = ({
       <ToolbarWrapper>
         <Title>{title}</Title>
         <RightSideWrapper>
-          {/* <Price>{price.toFixed(2)}$</Price> */}
+          <Price>{price.toFixed(2)}$</Price>
           <IconsWrapper>
             <TopIcon name="edit" onClick={() => onAddNote()}></TopIcon>
             <TopIcon

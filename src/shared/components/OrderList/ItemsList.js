@@ -25,14 +25,14 @@ const ItemsList = ({ items, onAddNote, onRemoveItem }) => {
   return (
     <ListWrapper>
       {!isItemsEmpty ? (
-        items.map(({ listItemId, title, note, price }) => {
+        items.map(({ listItemId, note, Product }) => {
           return (
             <OrderItem
               key={listItemId}
               listItemId={listItemId}
-              title={title}
+              title={Product.name}
               note={note}
-              price={price}
+              price={Product.price}
               onAddNote={() => onAddNote(listItemId)}
               onRemoveItem={onRemoveItem}
             />

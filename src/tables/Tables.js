@@ -1,12 +1,13 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import styled from "styled-components";
 import { tables } from "../shared/constants";
-import { Screen, Sidebar, Icon } from "../shared/components";
+import { Screen, Sidebar, Icon, LoadingSpinner } from "../shared/components";
 import {
   Confirm as ConfirmModal,
   Actions as ActionsModal,
   TablesList,
 } from "./components";
+import axios from "axios";
 
 const ContentWrapper = styled.div`
   display: flex;
@@ -38,19 +39,37 @@ const Tables = ({ history }) => {
     tableNum: null,
   });
   const [authWaiter, setAuthWaiter] = useState("Test");
-
+  const [initTables, setInitTables] = useState();
+  const [isLoading, setIsLoading] = useState(false);
   const sidebarButtons = {
     top: [
-      { name: "sync-alt", key: "sync-alt" },
+      { name: "sync-alt", key: "sync-alt", onClick: () => onInitTables() },
       { name: "plus", key: "plus", onClick: () => history.push("/addTable") },
     ],
     center: [],
     bottom: [{ name: "cog" }],
   };
 
-  const handleActionsClick = useCallback((tableId, tableNum) => {
-    // remove tableNum arg
-    setSelectedTable({ tableId, tableNum });
+  const onInitTables = useCallback(() => {
+    setInitTables([]);
+    setIsLoading(true);
+    axios
+      .get("/customerTables")
+      .then(({ data }) => {
+        setInitTables(data);
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+      .then(() => setIsLoading(false));
+  }, []);
+
+  useEffect(() => {
+    onInitTables();
+  }, [onInitTables]);
+
+  const handleActionsClick = useCallback((id, tableNum) => {
+    setSelectedTable({ id, tableNum });
     setWhichModalShown(modalTypes.ACTIONS);
   }, []);
 
@@ -66,20 +85,19 @@ const Tables = ({ history }) => {
           onHide={handleOnHide}
         />
       )}
-
       {whichModalShown === modalTypes.ACTIONS && (
         <ActionsModal
           onHide={handleOnHide}
           onViewOrders={() =>
             history.push({
               pathname: `/viewOrders`,
-              search: `?tableId=${selectedTable.tableId}`,
+              search: `?tableId=${selectedTable.id}`,
+              tableNum: selectedTable.tableNum
             })
           }
           tableNum={selectedTable.tableNum}
         />
       )}
-
       <Sidebar
         top={sidebarButtons.top}
         center={sidebarButtons.center}
@@ -93,12 +111,13 @@ const Tables = ({ history }) => {
             onClick={() => setWhichModalShown(modalTypes.CONFIRM)}
           />
         </WaiterAuth>
-        <TablesList
-          tables={tables}
-          onActionClick={(tableId, tableNum) =>
-            handleActionsClick(tableId, tableNum)
-          }
-        />
+        {initTables && (
+          <TablesList
+            tables={initTables}
+            onActionClick={(id, tableNum) => handleActionsClick(id, tableNum)}
+          />
+        )}
+        {isLoading && <LoadingSpinner />}
       </ContentWrapper>
     </Screen>
   );
