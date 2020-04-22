@@ -1,6 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
 import styled from "styled-components";
-import { tables } from "../shared/constants";
 import { Screen, Sidebar, Icon, LoadingSpinner } from "../shared/components";
 import {
   Confirm as ConfirmModal,

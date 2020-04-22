@@ -12,12 +12,6 @@ import {
   LoadingSpinner,
 } from "../shared/components";
 
-import {
-  orders as allOrders,
-  orderedProducts,
-  foodCards,
-} from "../shared/constants";
-
 const ContentWrapper = styled.div`
   display: flex;
   flex: 1;
@@ -45,6 +39,13 @@ const WaiterAuth = styled.div`
 
 const Text = styled.div`
   margin: 0px 20px 0px 20px;
+`;
+
+Text.Bold = styled(Text)`
+  font-size: 18px;
+  color: ${({ theme }) => theme.colors.darkGray};
+  font-weight: bold;
+  text-align: center;
 `;
 
 const OrderWrapper = styled.div`
@@ -85,11 +86,18 @@ const ViewOrders = ({ history, location: { search, tableNum } }) => {
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  const sidebarButtons = {
+    top: [{ name: "arrow-left", onClick: () => history.goBack() }],
+    center: [],
+    bottom: [{ name: "credit-card" }],
+  };
+
   const fetchOrders = useCallback(() => {
     setIsLoading(true);
     axios
       .get(`/customerTables/products?id=${tableId}`)
       .then(({ data }) => {
+        console.log(data);
         setOrders(data);
       })
       .catch((error) => {
@@ -102,11 +110,23 @@ const ViewOrders = ({ history, location: { search, tableNum } }) => {
     fetchOrders();
   }, [fetchOrders]);
 
-  const sidebarButtons = {
-    top: [{ name: "arrow-left", onClick: () => history.goBack() }],
-    center: [],
-    bottom: [{ name: "credit-card" }],
-  };
+  const onChangeOrderStatus = useCallback(
+    (orderId, isConfirmed) => {
+      setIsLoading(true);
+      const newStatus = isConfirmed ? "Cooking" : "Canceled";
+      axios
+        .patch(`/orders/status`, { id: orderId, status: newStatus })
+        .then(({ data }) => {
+          console.log(data);
+          fetchOrders();
+        })
+        .catch((error) => {
+          console.log(error);
+        })
+        .then(() => setIsLoading(false));
+    },
+    [fetchOrders]
+  );
 
   return (
     <Screen>
@@ -124,22 +144,26 @@ const ViewOrders = ({ history, location: { search, tableNum } }) => {
       </TopWrapper>
       <ContentWrapper>
         {orders.length !== 0
-          ? orders.map(({ id, OrderedProducts }) => (
+          ? orders.map(({ id, OrderedProducts, OrderStatus }) => (
               <OrderWrapper key={id}>
                 <OrderItemsWrapper>
                   <ItemsList items={OrderedProducts} />
-                  <ButtonsWrapper>
-                    <Button>
-                      <Icon name="times" hover={false} />
-                    </Button>
-                    <Button>
-                      <Icon name="check" hover={false} />
-                    </Button>
-                  </ButtonsWrapper>
+                  {OrderStatus.status === "Ordered" ? (
+                    <ButtonsWrapper>
+                      <Button onClick={() => onChangeOrderStatus(id, false)}>
+                        <Icon name="times" hover={false} />
+                      </Button>
+                      <Button onClick={() => onChangeOrderStatus(id, true)}>
+                        <Icon name="check" hover={false} />
+                      </Button>
+                    </ButtonsWrapper>
+                  ) : (
+                    <Text.Bold>Status: {OrderStatus.status}</Text.Bold>
+                  )}
                 </OrderItemsWrapper>
               </OrderWrapper>
             ))
-          : !isLoading && <Text>no Orders!</Text>}
+          : !isLoading && <Text.Bold>No Orders Found.</Text.Bold>}
         {isLoading && (
           <LoadingWrapper>
             <LoadingSpinner />
