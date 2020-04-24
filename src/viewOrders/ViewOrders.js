@@ -1,5 +1,4 @@
-import React, { useCallback, useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import React, { useCallback, useState, useEffect, useMemo } from "react";
 import queryString from "query-string";
 import styled from "styled-components";
 import axios from "axios";
@@ -62,6 +61,7 @@ const OrderItemsWrapper = styled.div`
   width: 300px;
   border-radius: 4px;
   border: 1px solid ${({ theme }) => theme.colors.lightPink};
+  background-color: ${({ theme }) => theme.colors.white};
 `;
 
 const ButtonsWrapper = styled.div`
@@ -82,28 +82,30 @@ const LoadingWrapper = styled.div`
 `;
 
 const ViewOrders = ({ history, location: { search, tableNum } }) => {
-  const [tableId, setTableId] = useState(queryString.parse(search).tableId);
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  // const [showNoteModal, setShowNoteModal] = useState(false);
+  const tableId = useMemo(() => queryString.parse(search).tableId, [search]);
 
-  const sidebarButtons = {
-    top: [{ name: "arrow-left", onClick: () => history.goBack() }],
-    center: [],
-    bottom: [{ name: "credit-card" }],
-  };
+  const sidebarButtons = useMemo(() => {
+    return {
+      top: [{ name: "arrow-left", onClick: () => history.goBack() }],
+      center: [],
+      bottom: [{ name: "credit-card" }],
+    };
+  }, [history]);
 
-  const fetchOrders = useCallback(() => {
+  const fetchOrders = useCallback(async () => {
     setIsLoading(true);
-    axios
-      .get(`/customerTables/products?id=${tableId}`)
-      .then(({ data }) => {
-        console.log(data);
-        setOrders(data);
-      })
-      .catch((error) => {
-        console.log(error);
-      })
-      .then(() => setIsLoading(false));
+    try {
+      const res = await axios.get(`/customerTables/products?id=${tableId}`);
+      console.log(res.data);
+      setOrders(res.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
   }, [tableId]);
 
   useEffect(() => {
@@ -111,22 +113,28 @@ const ViewOrders = ({ history, location: { search, tableNum } }) => {
   }, [fetchOrders]);
 
   const onChangeOrderStatus = useCallback(
-    (orderId, isConfirmed) => {
+    async (orderId, isConfirmed) => {
       setIsLoading(true);
       const newStatus = isConfirmed ? "Cooking" : "Canceled";
-      axios
-        .patch(`/orders/status`, { id: orderId, status: newStatus })
-        .then(({ data }) => {
-          console.log(data);
-          fetchOrders();
-        })
-        .catch((error) => {
-          console.log(error);
-        })
-        .then(() => setIsLoading(false));
+      try {
+        const res = await axios.patch(`/orders/status`, {
+          id: orderId,
+          status: newStatus,
+        });
+        console.log(res.data);
+        fetchOrders();
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false);
+      }
     },
     [fetchOrders]
   );
+
+  const onAddNote = useCallback((orderedProductId) => {
+    // Add note things
+  }, []);
 
   return (
     <Screen>
@@ -147,7 +155,12 @@ const ViewOrders = ({ history, location: { search, tableNum } }) => {
           ? orders.map(({ id, OrderedProducts, OrderStatus }) => (
               <OrderWrapper key={id}>
                 <OrderItemsWrapper>
-                  <ItemsList items={OrderedProducts} />
+                  <ItemsList
+                    items={OrderedProducts}
+                    onAddNote={(orderedProductId) =>
+                      onAddNote(orderedProductId)
+                    }
+                  />
                   {OrderStatus.status === "Ordered" ? (
                     <ButtonsWrapper>
                       <Button onClick={() => onChangeOrderStatus(id, false)}>

@@ -1,0 +1,1 @@
+export { default as tablesReducer } from './tables';

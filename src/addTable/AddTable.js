@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
 import {
@@ -77,34 +77,33 @@ const ErrorMessage = styled.div`
 const AddTable = ({ history }) => {
   const { register, handleSubmit, errors } = useForm();
   const [isLoading, setIsLoading] = useState(false);
+  const sidebarButtons = useMemo(() => {
+    return {
+      top: [{ name: "arrow-left", onClick: () => history.goBack() }],
+      center: [],
+      bottom: [],
+    };
+  }, [history]);
 
   const onSubmit = useCallback(
-    (data) => {
+    async (data) => {
       setIsLoading(true);
       const postData = {
-        // WaiterId: 1,
         status: "ordering",
         ...data,
       };
-      axios
-        .post("/customerTables", postData)
-        .then((response) => {
-          console.log(response);
-          history.push("/tables");
-        })
-        .catch((error) => {
-          console.log(error);
-        })
-        .then(() => setIsLoading(false));
+      try {
+        const res = await axios.post("/customerTables", postData);
+        console.log(res.data);
+        history.push("/tables");
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false);
+      }
     },
     [history]
   );
-
-  const sidebarButtons = {
-    top: [{ name: "arrow-left", onClick: () => history.goBack() }],
-    center: [],
-    bottom: [],
-  };
 
   return (
     <Screen>

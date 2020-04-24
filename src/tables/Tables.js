@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useMemo } from "react";
 import styled from "styled-components";
 import { Screen, Sidebar, Icon, LoadingSpinner } from "../shared/components";
 import {
@@ -40,27 +40,28 @@ const Tables = ({ history }) => {
   const [authWaiter, setAuthWaiter] = useState("Test");
   const [initTables, setInitTables] = useState();
   const [isLoading, setIsLoading] = useState(false);
-  const sidebarButtons = {
-    top: [
-      { name: "sync-alt", key: "sync-alt", onClick: () => onInitTables() },
-      { name: "plus", key: "plus", onClick: () => history.push("/addTable") },
-    ],
-    center: [],
-    bottom: [{ name: "cog" }],
-  };
+  const sidebarButtons = useMemo(() => {
+    return {
+      top: [
+        { name: "sync-alt", key: "sync-alt", onClick: () => onInitTables() },
+        { name: "plus", key: "plus", onClick: () => history.push("/addTable") },
+      ],
+      center: [],
+      bottom: [{ name: "cog" }],
+    };
+  }, [history]);
 
-  const onInitTables = useCallback(() => {
+  const onInitTables = useCallback(async () => {
     setInitTables([]);
     setIsLoading(true);
-    axios
-      .get("/customerTables")
-      .then(({ data }) => {
-        setInitTables(data);
-      })
-      .catch((error) => {
-        console.log(error);
-      })
-      .then(() => setIsLoading(false));
+    try {
+      const tables = await axios.get("/customerTables");
+      setInitTables(tables.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
   useEffect(() => {
@@ -91,7 +92,7 @@ const Tables = ({ history }) => {
             history.push({
               pathname: `/viewOrders`,
               search: `?tableId=${selectedTable.id}`,
-              tableNum: selectedTable.tableNum
+              tableNum: selectedTable.tableNum,
             })
           }
           tableNum={selectedTable.tableNum}
