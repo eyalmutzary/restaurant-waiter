@@ -86,7 +86,6 @@ const ViewOrders = ({ history, location: { search, tableNum } }) => {
   const [isLoading, setIsLoading] = useState(false);
   // const [showNoteModal, setShowNoteModal] = useState(false);
   const tableId = useMemo(() => queryString.parse(search).tableId, [search]);
-
   const sidebarButtons = useMemo(() => {
     return {
       top: [{ name: "arrow-left", onClick: () => history.goBack() }],
@@ -145,10 +144,6 @@ const ViewOrders = ({ history, location: { search, tableNum } }) => {
       />
       <TopWrapper>
         <Text>Table: {tableNum}</Text>
-        <WaiterAuth>
-          <Text>Signed as: ADDNAME</Text>
-          <Icon name="sign-out-alt" />
-        </WaiterAuth>
       </TopWrapper>
       <ContentWrapper>
         {orders.length !== 0

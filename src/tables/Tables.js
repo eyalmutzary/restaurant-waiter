@@ -1,12 +1,20 @@
-import React, { useState, useCallback, useEffect, useMemo } from "react";
+import React, {
+  useState,
+  useCallback,
+  useEffect,
+  useMemo,
+  useContext,
+} from "react";
 import styled from "styled-components";
 import { Screen, Sidebar, Icon, LoadingSpinner } from "../shared/components";
 import {
   Confirm as ConfirmModal,
   Actions as ActionsModal,
+  Auth as AuthModal,
   TablesList,
 } from "./components";
 import axios from "axios";
+import { AuthWaiterName } from "../app";
 
 const ContentWrapper = styled.div`
   display: flex;
@@ -27,29 +35,20 @@ const AuthText = styled.div`
 `;
 
 const modalTypes = {
-  CONFIRM: "CONFIRM",
+  LOGOUT: "LOGOUT",
   ACTIONS: "ACTIONS",
+  AUTH: "AUTH",
 };
 
 const Tables = ({ history }) => {
+  const [authWaiterName, setAuthWaiterName] = useContext(AuthWaiterName);
   const [whichModalShown, setWhichModalShown] = useState();
   const [selectedTable, setSelectedTable] = useState({
     tableId: null,
     tableNum: null,
   });
-  const [authWaiter, setAuthWaiter] = useState("Test");
   const [initTables, setInitTables] = useState();
   const [isLoading, setIsLoading] = useState(false);
-  const sidebarButtons = useMemo(() => {
-    return {
-      top: [
-        { name: "sync-alt", key: "sync-alt", onClick: () => onInitTables() },
-        { name: "plus", key: "plus", onClick: () => history.push("/addTable") },
-      ],
-      center: [],
-      bottom: [{ name: "cog" }],
-    };
-  }, [history]);
 
   const onInitTables = useCallback(async () => {
     setInitTables([]);
@@ -64,6 +63,22 @@ const Tables = ({ history }) => {
     }
   }, []);
 
+  const sidebarButtons = useMemo(() => {
+    return {
+      top: [
+        { name: "sync-alt", key: "sync-alt", onClick: () => onInitTables() },
+        {
+          name: "plus",
+          key: "plus",
+          disabled: true,
+          onClick: () => history.push("/addTable"),
+        },
+      ],
+      center: [],
+      bottom: [{ name: "cog" }],
+    };
+  }, [history, onInitTables]);
+
   useEffect(() => {
     onInitTables();
   }, [onInitTables]);
@@ -77,12 +92,22 @@ const Tables = ({ history }) => {
     setWhichModalShown(null);
   }, []);
 
+  const handleLogout = useCallback(() => {
+    setWhichModalShown(null);
+    setAuthWaiterName(null);
+    localStorage.setItem("waiter", null);
+  }, [setAuthWaiterName]);
+
   return (
     <Screen>
-      {whichModalShown === modalTypes.CONFIRM && (
+      {whichModalShown === modalTypes.AUTH && (
+        <AuthModal onHide={handleOnHide} />
+      )}
+      {whichModalShown === modalTypes.LOGOUT && (
         <ConfirmModal
           description="Are you sure to logout?"
           onHide={handleOnHide}
+          onConfirm={handleLogout}
         />
       )}
       {whichModalShown === modalTypes.ACTIONS && (
@@ -104,13 +129,23 @@ const Tables = ({ history }) => {
         bottom={sidebarButtons.bottom}
       />
       <ContentWrapper>
-        <WaiterAuth>
-          <AuthText>Signed as: {authWaiter}</AuthText>
-          <Icon
-            name="sign-out-alt"
-            onClick={() => setWhichModalShown(modalTypes.CONFIRM)}
-          />
-        </WaiterAuth>
+        {authWaiterName ? (
+          <WaiterAuth>
+            <AuthText>Signed as: {authWaiterName}</AuthText>
+            <Icon
+              name="sign-out-alt"
+              onClick={() => setWhichModalShown(modalTypes.LOGOUT)}
+            />
+          </WaiterAuth>
+        ) : (
+          <WaiterAuth>
+            <AuthText>Sign in</AuthText>
+            <Icon
+              name="sign-in-alt"
+              onClick={() => setWhichModalShown(modalTypes.AUTH)}
+            />
+          </WaiterAuth>
+        )}
         {initTables && (
           <TablesList
             tables={initTables}

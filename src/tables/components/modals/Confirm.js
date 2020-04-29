@@ -10,16 +10,16 @@ const Description = styled.div`
   text-align: center;
 `;
 
-const Confirm = ({ onHide, description }) => {
+const Confirm = ({ onHide, onConfirm, description }) => {
   const setOfButtons = useMemo(
     () => [
       { text: "Close", onClick: onHide },
       {
         text: "Confirm",
-        onClick: onHide,
+        onClick: onConfirm,
       },
     ],
-    [onHide]
+    [onHide, onConfirm]
   );
 
   return (

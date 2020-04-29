@@ -29,21 +29,6 @@ const FormWrapper = styled.form`
   border: 2px solid ${({ theme }) => theme.colors.lightPink};
 `;
 
-const WaiterAuth = styled.div`
-  margin: 20px 20px 0px 20px;
-  position: fixed;
-  top: 10px;
-  right: 10px;
-  display: flex;
-  font-size: 20px;
-  font-weight: bold;
-  color: ${({ theme }) => theme.colors.darkGray};
-`;
-
-const AuthText = styled.div`
-  margin: 0px 20px 0px 20px;
-`;
-
 const TitleWrapper = styled.div`
   text-align: center;
   font-size: 26px;
@@ -114,13 +99,6 @@ const AddTable = ({ history }) => {
       />
 
       <ContentWrapper>
-        <WaiterAuth>
-          <AuthText>Signed as: ADDNAME</AuthText>
-          <Icon
-            name="sign-out-alt"
-            // onClick={() => setWhichModalShown(modalTypes.CONFIRM)}
-          />
-        </WaiterAuth>
         <FormWrapper onSubmit={handleSubmit(onSubmit)}>
           <TitleWrapper>New Table</TitleWrapper>
           {isLoading && <LoadingSpinner />}
