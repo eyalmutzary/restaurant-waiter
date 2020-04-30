@@ -61,6 +61,7 @@ const ErrorMessage = styled.div`
 
 const AddTable = ({ history }) => {
   const { register, handleSubmit, errors } = useForm();
+  const [error, setError] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const sidebarButtons = useMemo(() => {
     return {
@@ -75,6 +76,7 @@ const AddTable = ({ history }) => {
       setIsLoading(true);
       const postData = {
         status: "ordering",
+        isActive: true,
         ...data,
       };
       try {
@@ -82,7 +84,12 @@ const AddTable = ({ history }) => {
         console.log(res.data);
         history.push("/tables");
       } catch (error) {
-        console.log(error);
+        console.log(error.response);
+        if (error.response.status === 403) {
+          setError("This table is already occupied.");
+        } else {
+          setError("Unkown error occurred.");
+        }
       } finally {
         setIsLoading(false);
       }
@@ -120,6 +127,7 @@ const AddTable = ({ history }) => {
             <ErrorMessage>{errors.diners.message}</ErrorMessage>
           )}
           <TextArea placeholder="Enter note..." name="note" ref={register} />
+          {error && <ErrorMessage>{error}</ErrorMessage>}
           <ButtonsWrapper>
             <Button.Black type="reset">
               <Icon name="sync-alt" hover={false} />

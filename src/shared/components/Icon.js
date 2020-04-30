@@ -28,7 +28,7 @@ import {
   faReceipt,
   faListUl,
   faCheck,
-  faSignInAlt
+  faSignInAlt,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(

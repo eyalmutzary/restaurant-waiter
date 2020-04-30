@@ -19,9 +19,8 @@ Text.Empty = styled(Text)`
   margin: 10px 0px 10px 0px;
 `;
 
-const ItemsList = ({ items, onAddNote, onRemoveItem }) => {
+const ItemsList = ({ items, editMode, onAddNote, onRemoveItem }) => {
   const isItemsEmpty = !items || items.length === 0;
-
   return (
     <ListWrapper>
       {!isItemsEmpty ? (
@@ -32,6 +31,7 @@ const ItemsList = ({ items, onAddNote, onRemoveItem }) => {
               listItemId={listItemId}
               title={Product.name}
               note={note}
+              editMode={editMode}
               price={Product.price}
               onAddNote={() => {
                 onAddNote(listItemId ? listItemId : id);

@@ -1,4 +1,10 @@
-import React, { useCallback, useState, useEffect, useMemo } from "react";
+import React, {
+  useCallback,
+  useState,
+  useEffect,
+  useMemo,
+  useContext,
+} from "react";
 import queryString from "query-string";
 import styled from "styled-components";
 import axios from "axios";
@@ -10,6 +16,7 @@ import {
   ItemsList,
   LoadingSpinner,
 } from "../shared/components";
+import { AuthWaiterName } from "../app";
 
 const ContentWrapper = styled.div`
   display: flex;
@@ -32,19 +39,24 @@ const TopWrapper = styled.div`
   right: 0px;
 `;
 
-const WaiterAuth = styled.div`
-  display: flex;
-`;
-
 const Text = styled.div`
   margin: 0px 20px 0px 20px;
 `;
 
 Text.Bold = styled(Text)`
   font-size: 18px;
+  display: flex;
+  justify-content: center;
   color: ${({ theme }) => theme.colors.darkGray};
   font-weight: bold;
-  text-align: center;
+`;
+
+Text.Red = styled(Text)`
+  color: ${({ theme }) => theme.colors.red};
+`;
+
+Text.Green = styled(Text)`
+  color: ${({ theme }) => theme.colors.darkGreen};
 `;
 
 const OrderWrapper = styled.div`
@@ -82,6 +94,7 @@ const LoadingWrapper = styled.div`
 `;
 
 const ViewOrders = ({ history, location: { search, tableNum } }) => {
+  const [authWaiterName, setAuthWaiterName] = useContext(AuthWaiterName);
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   // const [showNoteModal, setShowNoteModal] = useState(false);
@@ -113,12 +126,14 @@ const ViewOrders = ({ history, location: { search, tableNum } }) => {
 
   const onChangeOrderStatus = useCallback(
     async (orderId, isConfirmed) => {
+      console.log(authWaiterName);
       setIsLoading(true);
       const newStatus = isConfirmed ? "Cooking" : "Canceled";
       try {
         const res = await axios.patch(`/orders/status`, {
           id: orderId,
           status: newStatus,
+          waiterName: authWaiterName,
         });
         console.log(res.data);
         fetchOrders();
@@ -128,7 +143,7 @@ const ViewOrders = ({ history, location: { search, tableNum } }) => {
         setIsLoading(false);
       }
     },
-    [fetchOrders]
+    [fetchOrders, authWaiterName]
   );
 
   const onAddNote = useCallback((orderedProductId) => {
@@ -152,6 +167,7 @@ const ViewOrders = ({ history, location: { search, tableNum } }) => {
                 <OrderItemsWrapper>
                   <ItemsList
                     items={OrderedProducts}
+                    editMode={OrderStatus.status === "Ordered"}
                     onAddNote={(orderedProductId) =>
                       onAddNote(orderedProductId)
                     }
@@ -165,8 +181,14 @@ const ViewOrders = ({ history, location: { search, tableNum } }) => {
                         <Icon name="check" hover={false} />
                       </Button>
                     </ButtonsWrapper>
+                  ) : OrderStatus.status === "Canceled" ? (
+                    <Text.Bold>
+                      Status: <Text.Red>{OrderStatus.status}</Text.Red>
+                    </Text.Bold>
                   ) : (
-                    <Text.Bold>Status: {OrderStatus.status}</Text.Bold>
+                    <Text.Bold>
+                      Status: <Text.Green>{OrderStatus.status}</Text.Green>
+                    </Text.Bold>
                   )}
                 </OrderItemsWrapper>
               </OrderWrapper>

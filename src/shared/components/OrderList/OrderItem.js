@@ -64,6 +64,7 @@ const OrderItem = ({
   price,
   onAddNote,
   onRemoveItem,
+  editMode = true,
 }) => {
   return (
     <ItemWrapper>
@@ -71,13 +72,15 @@ const OrderItem = ({
         <Title>{title}</Title>
         <RightSideWrapper>
           <Price>{price.toFixed(2)}$</Price>
-          <IconsWrapper>
-            <TopIcon name="edit" onClick={() => onAddNote()}></TopIcon>
-            <TopIcon
-              name="times"
-              onClick={() => onRemoveItem(listItemId)}
-            ></TopIcon>
-          </IconsWrapper>
+          {editMode && (
+            <IconsWrapper>
+              <TopIcon name="edit" onClick={() => onAddNote()}></TopIcon>
+              <TopIcon
+                name="times"
+                onClick={() => onRemoveItem(listItemId)}
+              ></TopIcon>
+            </IconsWrapper>
+          )}
         </RightSideWrapper>
       </ToolbarWrapper>
       {note && (
