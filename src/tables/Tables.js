@@ -95,7 +95,7 @@ const Tables = ({ history }) => {
   const handleLogout = useCallback(() => {
     setWhichModalShown(null);
     setAuthWaiterName(null);
-    localStorage.setItem("waiter", null);
+    localStorage.removeItem("waiterName");
   }, [setAuthWaiterName]);
 
   return (

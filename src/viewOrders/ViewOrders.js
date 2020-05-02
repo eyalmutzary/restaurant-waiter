@@ -174,10 +174,16 @@ const ViewOrders = ({ history, location: { search, tableNum } }) => {
                   />
                   {OrderStatus.status === "Ordered" ? (
                     <ButtonsWrapper>
-                      <Button onClick={() => onChangeOrderStatus(id, false)}>
+                      <Button
+                        disabled={!authWaiterName}
+                        onClick={() => onChangeOrderStatus(id, false)}
+                      >
                         <Icon name="times" hover={false} />
                       </Button>
-                      <Button onClick={() => onChangeOrderStatus(id, true)}>
+                      <Button
+                        disabled={!authWaiterName}
+                        onClick={() => onChangeOrderStatus(id, true)}
+                      >
                         <Icon name="check" hover={false} />
                       </Button>
                     </ButtonsWrapper>
