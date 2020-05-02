@@ -10,8 +10,8 @@ const CardWrapper = styled.div`
   color: ${({ theme }) => theme.colors.darkGray};
   border-radius: 3px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-  width: 280px;
-  height: 300px;
+  width: 180px;
+  height: 240px;
   margin: 15px 10px 10px 10px;
 `;
 
@@ -22,9 +22,9 @@ const Image = styled.img`
 `;
 
 const Title = styled.h4`
-  font-size: 20px;
+  font-size: 16px;
   text-align: center;
-  height: 30px;
+  height: 40px;
   margin: 10px 0px 10px 0px;
   padding: 0px 8px 0px 8px;
 `;
@@ -32,12 +32,13 @@ const Title = styled.h4`
 const ContentWrapper = styled.div`
   display: flex;
   justify-content: space-around;
+  height: 20px;
   padding: 5px;
   margin: 10px;
 `;
 
 const Price = styled.div`
-  font-size: 18px;
+  font-size: 16px;
   flex: 2;
 `;
 
@@ -51,8 +52,8 @@ const Icon = styled(BaseIcon)`
 
 const Card = ({
   productId,
-  image,
-  title,
+  imageUrl,
+  name,
   price,
   onInfoClicked,
   onAddClicked,
@@ -60,18 +61,18 @@ const Card = ({
   ...rest
 }) => (
   <CardWrapper>
-    {image && <Image src={image} alt=""></Image>}
-    <Title>{title}</Title>
+    {imageUrl && <Image src={imageUrl} alt=""></Image>}
+    <Title>{name}</Title>
     <ContentWrapper>
       <Price>{price}$</Price>
       <IconsWrapper>
         <Icon
           name={"question"}
-          onClick={() => onInfoClicked({ title, image, price, description })}
+          onClick={() => onInfoClicked({ name, imageUrl, price, description })}
         />
         <Icon
           name={"plus"}
-          onClick={() => onAddClicked({ productId, title, price })}
+          onClick={() => onAddClicked({ productId, name, price })}
         />
       </IconsWrapper>
     </ContentWrapper>

@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import BaseIcon from "./Icon";
+import BaseIcon from "../Icon";
 
 const Backdrop = styled.div`
   background: rgba(0, 0, 0, 0.5);

@@ -33,12 +33,12 @@ const TotalPriceWrapper = styled.div`
 const Text = styled.div``;
 
 const OrderList = ({ items, ...rest }) => {
-  const totalPrice = useMemo(() => sumBy(items, "price"), [items]);
+  const totalPrice = useMemo(() => sumBy(items, "Product.price"), [items]);
 
   return (
     <OrderListWrapper>
       <Title>Order List:</Title>
-      <ItemsList items={items} {...rest}/>
+      <ItemsList items={items} {...rest} />
       <TotalPriceWrapper>
         <Text>Total Price:</Text>
         <Text>{totalPrice.toFixed(2)}$</Text>
