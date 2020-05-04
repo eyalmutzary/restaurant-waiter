@@ -17,19 +17,19 @@ const Actions = ({ onHide, tableNum, onViewOrders }) => {
     <Modal title={"Table:" + tableNum} onHide={onHide}>
       <ButtonsWrapper>
         <Button.Black onClick={onViewOrders}>
-          <Icon name="list-ul" />
+          <Icon name="list-ul" hover={false}/>
           View Orders
         </Button.Black>
         <Button.Black>
-          <Icon name="receipt" />
+          <Icon name="receipt" hover={false}/>
           Print Bill
         </Button.Black>
         <Button.Black>
-          <Icon name="plus" />
+          <Icon name="plus" hover={false}/>
           New Order
         </Button.Black>
         <Button.Black>
-          <Icon name="credit-card" />
+          <Icon name="credit-card" hover={false}/>
           Payment
         </Button.Black>
       </ButtonsWrapper>

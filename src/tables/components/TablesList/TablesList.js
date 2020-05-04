@@ -14,14 +14,14 @@ const TableWrapper = styled.table`
   overflow: hidden;
 `;
 
-const TableList = ({ tables, ...rest }) => (
+const TablesList = ({ tables, ...rest }) => (
   <Wrapper>
     <TableWrapper>
       <TableRow isHeader="true" />
-      {tables.map(({ ...args }) => (
-        <TableRow {...args} {...rest}/>
+      {tables.map(({ tableNum, ...args }) => (
+        <TableRow key={tableNum} tableNum={tableNum} {...args} {...rest} />
       ))}
     </TableWrapper>
   </Wrapper>
 );
-export default TableList;
+export default TablesList;

@@ -1,13 +1,12 @@
 import React, { useMemo } from "react";
 import styled from "styled-components";
-import { Modal } from "../../../shared/components";
+import Modal from "./Modal";
 
 const Description = styled.div`
   padding: 20px;
   font-size: 20px;
   font-weight: 500;
   letter-spacing: 2px;
-  text-align: center;
 `;
 
 const Confirm = ({ onHide, onConfirm, description }) => {
@@ -16,7 +15,10 @@ const Confirm = ({ onHide, onConfirm, description }) => {
       { text: "Close", onClick: onHide },
       {
         text: "Confirm",
-        onClick: onConfirm,
+        onClick: () => {
+          onConfirm();
+          onHide();
+        },
       },
     ],
     [onHide, onConfirm]

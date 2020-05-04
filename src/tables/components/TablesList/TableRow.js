@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import BaseIcon from "../Icon";
+import BaseIcon from "../../../shared/components/Icon";
 
 const RowWrapper = styled.tr`
   background-color: ${({ theme }) => theme.colors.white};
@@ -26,14 +26,12 @@ const TableBox = styled.td`
   padding: 10px;
 `;
 
+TableBox.Centered = styled(TableBox)`
+  text-align: center;
+`;
+
 const Icon = styled(BaseIcon)`
   padding: 10px;
-
-  &:hover {
-    color: ${({ theme }) => theme.colors.red};
-    cursor: pointer;
-    transition: 0.4s;
-  }
 `;
 
 const Alert = styled.div`
@@ -45,12 +43,15 @@ const Alert = styled.div`
   margin: 0;
 `;
 
+const columns = ["Table", "", "Note", "Diners", "Total Price", "Status", ""];
+
 const TableRow = ({
   isHeader,
-  tableId,
+  id,
   tableNum,
-  tableNote,
-  waiterName,
+  note,
+  diners,
+  CustomerTableStatus,
   totalPrice,
   isAlert,
   onActionClick,
@@ -59,28 +60,32 @@ const TableRow = ({
     {!isHeader ? (
       <RowWrapper>
         <TableBox>{tableNum}</TableBox>
-        <TableBox>
+        <TableBox.Centered>
           {isAlert && (
             <Alert>
-              <BaseIcon name="exclamation-circle" />
+              <BaseIcon name="exclamation-circle" hover={false} />
             </Alert>
           )}
-        </TableBox>
-        <TableBox>{tableNote}</TableBox>
-        <TableBox>{waiterName}</TableBox>
-        <TableBox>{totalPrice.toFixed(2)}$</TableBox>
+        </TableBox.Centered>
+        <TableBox width="50%">{note}</TableBox>
+        <TableBox.Centered>{diners}</TableBox.Centered>
+        <TableBox.Centered>
+          {totalPrice ? totalPrice.toFixed(2) : "0.00"}$
+        </TableBox.Centered>
+        <TableBox.Centered>{CustomerTableStatus.status}</TableBox.Centered>
+
         <TableBox>
-          <Icon name="ellipsis-h" onClick={() => onActionClick(tableId, tableNum)} />
+          <Icon
+            name="ellipsis-h"
+            onClick={() => onActionClick(id, tableNum)}
+          />
         </TableBox>
       </RowWrapper>
     ) : (
       <RowWrapper>
-        <HeaderBox>Table</HeaderBox>
-        <HeaderBox />
-        <HeaderBox>Note</HeaderBox>
-        <HeaderBox>Waiter Name</HeaderBox>
-        <HeaderBox>Total Price</HeaderBox>
-        <HeaderBox />
+        {columns.map((header, index) => (
+          <HeaderBox key={index}>{header}</HeaderBox>
+        ))}
       </RowWrapper>
     )}
   </>

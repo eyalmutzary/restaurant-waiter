@@ -11,6 +11,7 @@ const TextArea = styled.textarea`
   font-size: 16px;
   transition: 0.2s;
   outline: none;
+  resize: none;
 
   &:focus {
     border: solid 1px ${({ theme }) => theme.colors.darkGray};

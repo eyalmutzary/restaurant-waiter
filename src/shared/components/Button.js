@@ -21,15 +21,6 @@ const Button = styled.button`
   }
 `;
 
-Button.Confirm = styled(Button)`
-  color: ${({ theme }) => theme.colors.white};
-  background-color: ${({ theme }) => theme.colors.green};
-  &:hover {
-    background-color: ${({ theme, disabled }) =>
-      !disabled && theme.colors.darkGreen};
-  }
-`;
-
 Button.Warning = styled(Button)`
   color: ${({ theme }) => theme.colors.white};
   background-color: ${({ theme }) => theme.colors.red};
@@ -53,7 +44,7 @@ Button.Black = styled(Button)`
   color: ${({ theme }) => theme.colors.white};
   border-bottom: 2px solid ${({ theme }) => theme.colors.red};
   border-radius: 4px;
-  font-size: 16px;
+  font-size: 20px;
   font-weight: bold;
   letter-spacing: 2px;
   width: 190px;

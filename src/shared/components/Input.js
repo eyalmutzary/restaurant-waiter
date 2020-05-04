@@ -34,11 +34,18 @@ const Name = styled.div`
   color: ${({ theme }) => theme.colors.gray};
 `;
 
-const Input = ({ name, type }) => (
-  <InputWrapper>
-    <Controller type={type} placeholder={"Enter " + name + " here..."} />
-    <Name>{name}</Name>
-  </InputWrapper>
-);
+const Input = ({ placeholder, type, forwardRef, ...rest }) => {
+  return (
+    <InputWrapper>
+      <Controller
+        ref={forwardRef}
+        type={type}
+        placeholder={"Enter " + placeholder + " here..."}
+        {...rest}
+      />
+      <Name>{placeholder}</Name>
+    </InputWrapper>
+  );
+};
 
 export default Input;

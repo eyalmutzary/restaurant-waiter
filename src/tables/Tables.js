@@ -1,18 +1,20 @@
-import React, { useState, useCallback } from "react";
+import React, {
+  useState,
+  useCallback,
+  useEffect,
+  useMemo,
+  useContext,
+} from "react";
 import styled from "styled-components";
-import { tables } from "../shared/constants";
-import {
-  Screen,
-  TablesList,
-  Sidebar,
-  Icon as BaseIcon,
-} from "../shared/components";
+import { Screen, Sidebar, Icon, LoadingSpinner } from "../shared/components";
 import {
   Confirm as ConfirmModal,
   Actions as ActionsModal,
-  AddTable as AddTableModal,
-  ViewOrders as ViewOrdersModal,
-} from "./components/modals";
+  Auth as AuthModal,
+  TablesList,
+} from "./components";
+import axios from "axios";
+import { AuthWaiterName } from "../app";
 
 const ContentWrapper = styled.div`
   display: flex;
@@ -32,41 +34,57 @@ const AuthText = styled.div`
   margin: 0px 20px 0px 20px;
 `;
 
-const Icon = styled(BaseIcon)`
-  &:hover {
-    color: ${({ theme }) => theme.colors.red};
-    cursor: pointer;
-    transition: 0.4s;
-  }
-`;
-
 const modalTypes = {
-  CONFIRM: "CONFIRM",
+  LOGOUT: "LOGOUT",
   ACTIONS: "ACTIONS",
-  ADDTABLE: "ADDTABLE",
-  VIEWORDERS: "VIEWORDERS",
+  AUTH: "AUTH",
 };
 
-const Tables = () => {
+const Tables = ({ history }) => {
+  const [authWaiterName, setAuthWaiterName] = useContext(AuthWaiterName);
   const [whichModalShown, setWhichModalShown] = useState();
   const [selectedTable, setSelectedTable] = useState({
     tableId: null,
     tableNum: null,
   });
-  const [authWaiter, setAuthWaiter] = useState("Test");
+  const [initTables, setInitTables] = useState();
+  const [isLoading, setIsLoading] = useState(false);
 
-  const sidebarButtons = {
-    top: [
-      { name: "sync-alt" },
-      { name: "plus", onClick: () => setWhichModalShown(modalTypes.ADDTABLE) },
-    ],
-    center: [],
-    bottom: [{ name: "cog" }],
-  };
+  const onInitTables = useCallback(async () => {
+    setInitTables([]);
+    setIsLoading(true);
+    try {
+      const tables = await axios.get("/customerTables");
+      setInitTables(tables.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
-  const handleActionsClick = useCallback((tableId, tableNum) => {
-    // remove tableNum arg
-    setSelectedTable({ tableId, tableNum });
+  const sidebarButtons = useMemo(() => {
+    return {
+      top: [
+        { name: "sync-alt", key: "sync-alt", onClick: () => onInitTables() },
+        {
+          name: "plus",
+          key: "plus",
+          disabled: true,
+          onClick: () => history.push("/addTable"),
+        },
+      ],
+      center: [],
+      bottom: [{ name: "cog" }],
+    };
+  }, [history, onInitTables]);
+
+  useEffect(() => {
+    onInitTables();
+  }, [onInitTables]);
+
+  const handleActionsClick = useCallback((id, tableNum) => {
+    setSelectedTable({ id, tableNum });
     setWhichModalShown(modalTypes.ACTIONS);
   }, []);
 
@@ -74,50 +92,67 @@ const Tables = () => {
     setWhichModalShown(null);
   }, []);
 
+  const handleLogout = useCallback(() => {
+    setWhichModalShown(null);
+    setAuthWaiterName(null);
+    localStorage.removeItem("waiterName");
+  }, [setAuthWaiterName]);
+
   return (
     <Screen>
-      {whichModalShown === modalTypes.CONFIRM && (
+      {whichModalShown === modalTypes.AUTH && (
+        <AuthModal onHide={handleOnHide} />
+      )}
+      {whichModalShown === modalTypes.LOGOUT && (
         <ConfirmModal
           description="Are you sure to logout?"
           onHide={handleOnHide}
+          onConfirm={handleLogout}
         />
       )}
-
       {whichModalShown === modalTypes.ACTIONS && (
         <ActionsModal
           onHide={handleOnHide}
-          onViewOrders={() => setWhichModalShown(modalTypes.VIEWORDERS)}
+          onViewOrders={() =>
+            history.push({
+              pathname: `/viewOrders`,
+              search: `?tableId=${selectedTable.id}`,
+              tableNum: selectedTable.tableNum,
+            })
+          }
           tableNum={selectedTable.tableNum}
         />
       )}
-
-      {whichModalShown === modalTypes.ADDTABLE && (
-        <AddTableModal onHide={handleOnHide} />
-      )}
-
-      {whichModalShown === modalTypes.VIEWORDERS && (
-        <ViewOrdersModal onHide={handleOnHide} {...selectedTable} />
-      )}
-
       <Sidebar
         top={sidebarButtons.top}
         center={sidebarButtons.center}
         bottom={sidebarButtons.bottom}
       />
       <ContentWrapper>
-        <WaiterAuth>
-          <AuthText>Signed as: {authWaiter}</AuthText>
-          <Icon
-            name="sign-out-alt"
-            onClick={() => setWhichModalShown(modalTypes.CONFIRM)}
+        {authWaiterName ? (
+          <WaiterAuth>
+            <AuthText>Signed as: {authWaiterName}</AuthText>
+            <Icon
+              name="sign-out-alt"
+              onClick={() => setWhichModalShown(modalTypes.LOGOUT)}
+            />
+          </WaiterAuth>
+        ) : (
+          <WaiterAuth>
+            <AuthText>Sign in</AuthText>
+            <Icon
+              name="sign-in-alt"
+              onClick={() => setWhichModalShown(modalTypes.AUTH)}
+            />
+          </WaiterAuth>
+        )}
+        {initTables && (
+          <TablesList
+            tables={initTables}
+            onActionClick={(id, tableNum) => handleActionsClick(id, tableNum)}
           />
-        </WaiterAuth>
-        <TablesList
-          tables={tables}
-          onActionClick={(tableId, tableNum) =>
-            handleActionsClick(tableId, tableNum)
-          }
-        />
+        )}
+        {isLoading && <LoadingSpinner />}
       </ContentWrapper>
     </Screen>
   );
