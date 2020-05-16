@@ -20,7 +20,7 @@ const Icon = styled(BaseIcon)`
 const Success = ({ title, onHide, description }) => {
   return (
     <Modal title={title} onHide={onHide}>
-      <Icon name="check" />
+      <Icon hover={false} name="check" />
       <Description>{description}</Description>
     </Modal>
   );
