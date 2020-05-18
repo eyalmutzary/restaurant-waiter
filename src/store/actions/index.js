@@ -1,6 +1,3 @@
 export {
-    addTable,
-    getTables,
-    getTableOrders,
-    closeTable
-} from './tables';
+    newAlert,
+} from './alerts';

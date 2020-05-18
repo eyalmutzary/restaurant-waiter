@@ -1,1 +1,1 @@
-export { default as tablesReducer } from './tables';
+export { default as alertsReducer } from './alerts';

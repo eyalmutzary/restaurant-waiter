@@ -14,7 +14,7 @@ import {
   TablesList,
 } from "./components";
 import axios from "axios";
-import { AuthWaiterName } from "../app";
+import { AuthWaiterName, Alerts } from "../app";
 
 const ContentWrapper = styled.div`
   display: flex;
@@ -42,6 +42,7 @@ const modalTypes = {
 
 const Tables = ({ history }) => {
   const [authWaiterName, setAuthWaiterName] = useContext(AuthWaiterName);
+  const [alerts, setAlerts] = useContext(Alerts);
   const [whichModalShown, setWhichModalShown] = useState();
   const [selectedTable, setSelectedTable] = useState({
     tableId: null,
@@ -51,6 +52,7 @@ const Tables = ({ history }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const onInitTables = useCallback(async () => {
+    console.log(alerts);
     setInitTables([]);
     setIsLoading(true);
     try {
@@ -61,7 +63,7 @@ const Tables = ({ history }) => {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [alerts]);
 
   const sidebarButtons = useMemo(() => {
     return {

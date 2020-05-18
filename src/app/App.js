@@ -5,7 +5,7 @@ import Router from "./Router";
 import { theme, GlobalStyle } from "../shared/theme";
 // import { Provider } from "react-redux";
 // import { createStore, combineReducers } from "redux";
-// import { tablesReducer } from "../store/reducers";
+// import { alertsReducer } from "../store/reducers";
 import { Store } from "./Store";
 
 const AppContainer = styled.div`
@@ -15,10 +15,11 @@ const AppContainer = styled.div`
 `;
 
 // const rootReducer = combineReducers({
-//   tables: tablesReducer,
+//   alerts: alertsReducer,
 // });
 
 // const store = createStore(rootReducer);
+// Socket();
 
 const App = () => (
   // <Provider store={store}>

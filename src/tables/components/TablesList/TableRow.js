@@ -53,42 +53,68 @@ const TableRow = ({
   diners,
   CustomerTableStatus,
   totalPrice,
-  isAlert,
+  alerts,
   onActionClick,
-}) => (
-  <>
-    {!isHeader ? (
-      <RowWrapper>
-        <TableBox>{tableNum}</TableBox>
-        <TableBox.Centered>
-          {isAlert && (
-            <Alert>
-              <BaseIcon name="exclamation-circle" hover={false} />
-            </Alert>
-          )}
-        </TableBox.Centered>
-        <TableBox width="50%">{note}</TableBox>
-        <TableBox.Centered>{diners}</TableBox.Centered>
-        <TableBox.Centered>
-          {totalPrice ? totalPrice.toFixed(2) : "0.00"}$
-        </TableBox.Centered>
-        <TableBox.Centered>{CustomerTableStatus.status}</TableBox.Centered>
+  onRemoveAlert,
+}) => {
+  return (
+    <>
+      {!isHeader ? (
+        <RowWrapper>
+          <TableBox>{tableNum}</TableBox>
+          <TableBox.Centered>
+            {alerts.length > 0 && (
+              <Alert>
+                {alerts.map(({ alertType, id }) => {
+                  switch (alertType) {
+                    case "callWaiter":
+                      return (
+                        <BaseIcon
+                          name="hand-paper"
+                          onClick={() => onRemoveAlert(id)}
+                        />
+                      );
+                    case "callCheck":
+                      return (
+                        <BaseIcon
+                          name="money-bill-wave"
+                          onClick={() => onRemoveAlert(id)}
+                        />
+                      );
+                    case "newOrder":
+                      return <BaseIcon name="receipt" hover={false} />;
+                    default:
+                      return (
+                        <BaseIcon name="exclamation-circle" hover={false} />
+                      );
+                  }
+                })}
+              </Alert>
+            )}
+          </TableBox.Centered>
+          <TableBox width="50%">{note}</TableBox>
+          <TableBox.Centered>{diners}</TableBox.Centered>
+          <TableBox.Centered>
+            {totalPrice ? totalPrice.toFixed(2) : "0.00"}$
+          </TableBox.Centered>
+          <TableBox.Centered>{CustomerTableStatus.status}</TableBox.Centered>
 
-        <TableBox>
-          <Icon
-            name="ellipsis-h"
-            onClick={() => onActionClick(id, tableNum)}
-          />
-        </TableBox>
-      </RowWrapper>
-    ) : (
-      <RowWrapper>
-        {columns.map((header, index) => (
-          <HeaderBox key={index}>{header}</HeaderBox>
-        ))}
-      </RowWrapper>
-    )}
-  </>
-);
+          <TableBox>
+            <Icon
+              name="ellipsis-h"
+              onClick={() => onActionClick(id, tableNum)}
+            />
+          </TableBox>
+        </RowWrapper>
+      ) : (
+        <RowWrapper>
+          {columns.map((header, index) => (
+            <HeaderBox key={index}>{header}</HeaderBox>
+          ))}
+        </RowWrapper>
+      )}
+    </>
+  );
+};
 
 export default TableRow;

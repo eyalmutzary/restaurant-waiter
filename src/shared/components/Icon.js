@@ -29,6 +29,8 @@ import {
   faListUl,
   faCheck,
   faSignInAlt,
+  faMoneyBillWave,
+  faHandPaper,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
@@ -57,7 +59,9 @@ library.add(
   faReceipt,
   faListUl,
   faCheck,
-  faSignInAlt
+  faSignInAlt,
+  faHandPaper,
+  faMoneyBillWave
 );
 
 const IconWrapper = styled.div``;
