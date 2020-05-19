@@ -1,7 +1,8 @@
-import React, { useContext, useCallback } from "react";
+import React, { useCallback } from "react";
 import styled from "styled-components";
 import TableRow from "./TableRow";
-import { Alerts } from "../../../app";
+import { useSelector, useDispatch } from "react-redux";
+import { removeAlert } from "../../../store/actions";
 
 const Wrapper = styled.div`
   overflow: auto;
@@ -16,13 +17,16 @@ const TableWrapper = styled.table`
 `;
 
 const TablesList = ({ tables, ...rest }) => {
-  const [alerts, setAlerts] = useContext(Alerts);
+  const alerts = useSelector((state) => state.alerts);
+  const dispatch = useDispatch();
 
-  const handleRemoveAlert = useCallback((id) => {
-    const oldAlertsState = [...alerts];
-    const newState = oldAlertsState.filter(alert => alert.id !== id);
-    setAlerts(newState);
-  }, [alerts, setAlerts]);
+  const handleRemoveAlert = useCallback(
+    (id) => {
+      console.log(id);
+      dispatch(removeAlert(id));
+    },
+    [dispatch]
+  );
 
   return (
     <Wrapper>
