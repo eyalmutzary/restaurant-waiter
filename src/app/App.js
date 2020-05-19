@@ -7,6 +7,7 @@ import { Provider } from "react-redux";
 import { createStore, combineReducers } from "redux";
 import { alertsReducer } from "../store/reducers";
 import { Store } from "./Store";
+import { Socket } from "./Socket";
 
 const AppContainer = styled.div`
   display: flex;
@@ -30,6 +31,7 @@ const App = () => (
           <AppContainer>
             <GlobalStyle />
             <Router />
+            <Socket />
           </AppContainer>
         </ThemeProvider>
       </Store>

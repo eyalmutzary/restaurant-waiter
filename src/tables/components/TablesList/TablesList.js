@@ -22,7 +22,6 @@ const TablesList = ({ tables, ...rest }) => {
 
   const handleRemoveAlert = useCallback(
     (id) => {
-      console.log(id);
       dispatch(removeAlert(id));
     },
     [dispatch]

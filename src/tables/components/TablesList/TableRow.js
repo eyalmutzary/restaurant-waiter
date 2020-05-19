@@ -35,9 +35,8 @@ const Icon = styled(BaseIcon)`
 `;
 
 const Alert = styled.div`
-  /* background-color: ${({ theme }) => theme.colors.red};
-  border-radius: 50%; */
-  color: ${({ theme }) => theme.colors.red};
+  color: ${({ theme }) => theme.colors.bordeaux};
+  font-size: 20px;
   display: inline;
   padding: 0px;
   margin: 0;
@@ -61,7 +60,7 @@ const TableRow = ({
     <>
       {!isHeader ? (
         <RowWrapper>
-          <TableBox>{tableNum}</TableBox>
+          <TableBox.Centered>{tableNum}</TableBox.Centered>
           <TableBox.Centered>
             {alerts.length > 0 && (
               <Alert>

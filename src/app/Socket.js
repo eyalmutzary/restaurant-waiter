@@ -1,19 +1,25 @@
-// import React, { useState, useContext } from "react";
-// import * as io from "socket.io-client";
-// import { Alerts } from "./Store";
+import React, { useMemo, useCallback, useEffect } from "react";
+import * as io from "socket.io-client";
+import { useDispatch } from "react-redux";
+import { newAlert } from "../store/actions";
 
-// const socket = io("http://localhost:3000");
+export const Socket = ({ children }) => {
+  const socket = useMemo(() => io("http://localhost:3000"), []);
+  const dispatch = useDispatch();
 
-// const joinSocket = () => {
-//   console.log("joining");
-//   socket.emit("join", { authType: "waiter", waiterName: "Eyal" });
-// };
+  const joinSocket = useCallback(() => {
+    socket.emit("join", { authType: "waiter", waiterName: "authWaiterName" });
+  }, [socket]);
 
-// export const Socket = () => {
-//   console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@ test");
-//   joinSocket();
-//   socket.on("callWaiter", (data) => {
-//     console.log("clicked");
-//     // setAlerts([...alerts, data]);
-//   });
-// };
+  useEffect(() => {
+    joinSocket();
+    socket.on("callWaiter", (data) => {
+      dispatch(newAlert(data));
+    });
+    socket.on("callCheck", (data) => {
+      dispatch(newAlert(data));
+    });
+  }, [joinSocket, socket, dispatch]);
+
+  return <>{children}</>;
+};
